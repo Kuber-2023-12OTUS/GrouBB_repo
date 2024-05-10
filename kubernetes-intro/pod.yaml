@@ -1,0 +1,37 @@
+#Необходимо создать манифест pod.yaml. Он должен описывать под, который:
+# ○   Будет создаваться в namespace homework
+# ○   Будет иметь контейнер, поднимающий веб-сервер на 8000 порту и отдающий содержимое папки /homework внутри ÿтого контейнера.
+# ○   Будет иметь init-контейнер, скачивающий или генерирующий файл index.html и сохраняющий его в директорию /init
+# ○   Будет иметь общий том (volume) длю основного и initконтейнера, монтируемый в директорию /homework первого и /init второго
+# ○   Будет удалять файл index.html из директории /homework основного контейнера, перед его завершением
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homework-pod
+  namespace: homework
+spec:
+  containers:
+  - name: web-server
+    image: nginx
+    ports:
+    - containerPort: 8000
+    volumeMounts:
+    - name: shared-data
+      mountPath: /homework
+  initContainers:
+  - name: init-container
+    image: busybox
+    command: ['sh', '-c', 'echo "<h1>And it will also, then, put that blank page in there.</h1>" > /init/index.html']
+    volumeMounts:
+    - name: shared-data
+      mountPath: /init
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  terminationGracePeriodSeconds: 10
+  # Указываем lifecycle preStop hook для удаления index.html перед завершением контейнера
+  lifecycle:
+    preStop:
+      exec:
+        command: ["sh", "-c", "rm -f /homework/index.html"]
