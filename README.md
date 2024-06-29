@@ -10,13 +10,15 @@
 
 ## Как запустить проект:
  - Применям манифесты
+```
    kubectl apply -f namespace.yaml
    kubectl apply -f pod.yaml
-
+```
 ## Как проверить работоспособность:
+```
  kubectl get namespaces - проверям наличие нашего namespace
  kubectl get po -n homework -owide - проверяем наличие pod в нашем namespace  
  (или kubectl get po --all-namespaces)
-
+```
 ## PR checklist:
  - [ ] Выставлен label с темой домашнего задания
