@@ -2,7 +2,7 @@ kubernetes-intro:
   - kubernetes-intro/*
 
 kubernetes-controllers:
-  - kubernetes-controllers/*
+  - kubernetes-networks/*
   
 kubernetes-security:
   - kubernetes-security/*

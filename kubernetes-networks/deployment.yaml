@@ -22,8 +22,9 @@ spec:
             - name: shared-volume
               mountPath: /homework
           readinessProbe:
-            exec:
-              command: ["cat", "/homework/index.html"]
+            httpGet:
+              path: /index.html
+              port: 8080
       initContainers:
         - name: init-container
           image: busybox
