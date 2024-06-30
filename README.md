@@ -1,27 +1,27 @@
-# Выполнено ДЗ №3
+# Выполнено ДЗ №4
 
  - [х] Основное ДЗ
  - [х] Задание со *
 
 ## В процессе сделано:
- - Использовался установленный minikube из ДЗ1 (namespace homework уже существует, namespace.yaml, deployment.yaml  перенесен из предыдущего ДЗ)
- - Изменил readiness-пробу в манифесте deployment.yaml
- - Установил в кластер ingress-контроллер nginx (добавил задание со *)
- - Созданы service.yaml, ingress.yaml 
+- Создал манифест pvc.yaml, описывающий PersistentVolumeClaim, запрашивающий хранилище с storageClass по-умолчанию
+- Создал манифест cm.yaml для объекта типа configMap, описывающий произвольный набор пар ключ-значение
+- В манифесте deployment.yaml изменил спецификацию volume типа emptyDir, который монтируется в init и основной контейнер, на pvc, созданный в предыдущем пункте
+- В манифесте deployment.yaml добавил монтирование ранее созданного configMap как volume к основному контейнеру пода в директорию /homework/conf, так, чтобы его содержимое можно было получить, обратившись по url /conf/file 
 
 ## Как запустить проект:
  - Применяем манифесты
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-kubectl apply -f namespace.yaml
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
-kubectl apply -f ingress.yaml
-homework.otus в /etc/hosts
+kubectl apply -f kubernetes-volumes/pvc.yaml
+kubectl apply -f kubernetes-volumes/cm.yaml
+kubectl apply -f kubernetes-volumes/storageClass.yaml
 ```
-
 ## Как проверить работоспособность:
-Для проверки открыть в браузере http://homework.otus/index.html. 
+```
+kubectl get pvc -n homework
+kubectl get cm -n homework
+kubectl get deployment -n homework
+```
 
 ## PR checklist:
  - [ ] Выставлен label с темой домашнего задания
