@@ -19,6 +19,7 @@ kubectl apply -f service.yaml
 kubectl apply -f ingress.yaml
 homework.otus в /etc/hosts
 ```
+
 ## Как проверить работоспособность:
 Для проверки открыть в браузере http://homework.otus/index.html. 
 
