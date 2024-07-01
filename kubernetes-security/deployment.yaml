@@ -13,6 +13,7 @@ spec:
       labels:
         app: homework
     spec:
+      serviceAccountName: monitoring
       containers:
         - name: web-server
           image: nginx
@@ -27,12 +28,8 @@ spec:
           volumeMounts:
             - name: homework-volume
               mountPath: /homework
-            - name: config-volume
-              mountPath: /homework/conf
+          # Для задания с * может потребоваться дополнительная настройка
       volumes:
         - name: homework-volume
           persistentVolumeClaim:
             claimName: my-pvc
-        - name: config-volume
-          configMap:
-            name: my-configmap

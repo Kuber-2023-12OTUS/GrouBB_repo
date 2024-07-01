@@ -1,26 +1,36 @@
-# Выполнено ДЗ №4
+# Выполнено ДЗ №5
 
  - [х] Основное ДЗ
- - [ ] Задание со *
+ - [х] Задание со *
 
 ## В процессе сделано:
-- Создал манифест pvc.yaml, описывающий PersistentVolumeClaim, запрашивающий хранилище с storageClass по-умолчанию
-- Создал манифест cm.yaml для объекта типа configMap, описывающий произвольный набор пар ключ-значение
-- В манифесте deployment.yaml изменил спецификацию volume типа emptyDir, который монтируется в init и основной контейнер, на pvc, созданный в предыдущем пункте
-- В манифесте deployment.yaml добавил монтирование ранее созданного configMap как volume к основному контейнеру пода в директорию /homework/conf, так, чтобы его содержимое можно было получить, обратившись по url /conf/file 
-
+В namespace homework создал service account monitoring и дать ему доступ к эндпоинту /metrics моего кластера
+- Изменить манифест deployment из прошлых ДЗ так, чтобы поды запускались под service account monitoring
+- В namespace homework создать service account с именем cd и дать ему роль admin в рамках namespace homework
+- Создать kubeconfig для service account cd 
+- Сгенерировать для service account cd токен с временем действия 1 день и сохранить его в файл token
 ## Как запустить проект:
  - Применяем манифесты
 ```
-kubectl apply -f kubernetes-volumes/pvc.yaml
-kubectl apply -f kubernetes-volumes/cm.yaml
-kubectl apply -f kubernetes-volumes/storageClass.yaml
+kubectl apply -f kubernetes-security/serviceaccount-monitoring.yaml
+kubectl apply -f kubernetes-security/serviceaccount-cd.yaml
+kubectl config view --minify --flatten > kubeconfig-cd
+kubectl config set-credentials cd --token=<token>
+kubectl config set-context cd --cluster=$(kubectl config view -o=jsonpath='{.clusters[0].name}') --user=cd
+kubectl config use-context cd
+Где <token> - это токен, который можно сгенерировать через API Kubernetes
 ```
+Задание с *
+
+Для задания с * необходимо настроить механизм вызова эндпоинта /metrics и сохранения ответа в файл metrics.html. 
+Это может быть выполнено внутри контейнера вашего приложения в Deployment через скрипт, который вызывает нужный эндпоинт и сохраняет результат.
 ## Как проверить работоспособность:
 ```
-kubectl get pvc -n homework
-kubectl get cm -n homework
+kubectl get serviceaccount -n homework
+kubectl get role -n homework
+kubectl get rolebinding -n homework
 kubectl get deployment -n homework
+
 ```
 
 ## PR checklist:
