@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework-deployment
+  namespace: homework
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: homework-app
+  template:
+    metadata:
+      labels:
+        app: homework-app
+    spec:
+      containers:
+        - name: web-container
+          image: nginx
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: shared-volume
+              mountPath: /homework
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 8080
+      initContainers:
+        - name: init-container
+          image: busybox
+          command: ["sh", "-c", "echo 'And it will also, then, put that blank page in there' > /init/index.html"]
+          volumeMounts:
+            - name: shared-volume
+              mountPath: /init
+      volumes:
+        - name: shared-volume
+          emptyDir: {}
